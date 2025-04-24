@@ -5,7 +5,7 @@ import type { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 
-const socket = io("https://socketserverfpl.up.railway.app");
+const socket = io("https://socketserverfpl.up.railway.app:4000");
 const messages = ref<string[]>([]);
 const message = ref('');
 const escribiendoP = reactive({

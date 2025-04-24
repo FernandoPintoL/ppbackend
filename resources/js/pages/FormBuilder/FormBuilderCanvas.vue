@@ -28,7 +28,7 @@ const props = defineProps({
 });
 
 // Socket.io connection
-const socket = io('https://socketserverfpl.up.railway.app');
+const socket = io('https://socketserverfpl.up.railway.app:4000');
 const roomId = ref(props.formId ? `form-${props.formId}` : 'new-form'); // Dynamic room ID based on form ID
 const currentUser = ref(props.currentUserName || 'User-' + Math.floor(Math.random() * 1000));
 
