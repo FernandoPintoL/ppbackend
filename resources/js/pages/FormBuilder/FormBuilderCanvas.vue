@@ -28,7 +28,14 @@ const props = defineProps({
 });
 
 // Socket.io connection
-const socket = io('https://socketserverfpl.up.railway.app:4000');
+const socket = io('https://socketserverfpl.up.railway.app', {
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000,
+    timeout: 20000,
+    transports: ['websocket', 'polling']
+});
+const socketConnected = ref(false);
+const socketError = ref('');
 const roomId = ref(props.formId ? `form-${props.formId}` : 'new-form'); // Dynamic room ID based on form ID
 const currentUser = ref(props.currentUserName || 'User-' + Math.floor(Math.random() * 1000));
 
@@ -295,6 +302,28 @@ const handleFormNameChange = () => {
 
 // Socket.io event handlers
 onMounted(() => {
+    // Set up socket connection event handlers
+    socket.on('connect', () => {
+        console.log('Socket connected');
+        socketConnected.value = true;
+        socketError.value = '';
+    });
+
+    socket.on('connect_error', (err) => {
+        console.error('Socket connection error:', err);
+        socketConnected.value = false;
+        socketError.value = `Connection error: ${err.message}`;
+    });
+
+    socket.on('disconnect', (reason) => {
+        console.log('Socket disconnected:', reason);
+        socketConnected.value = false;
+        if (reason === 'io server disconnect') {
+            // the disconnection was initiated by the server, reconnect manually
+            socket.connect();
+        }
+    });
+
     // Load collaborators if we have a form ID
     if (props.formId) {
         loadCollaborators();
@@ -383,11 +412,25 @@ onUnmounted(() => {
         <div class="col-span-6">
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <div class="mb-4 flex justify-between items-center">
-                    <input
-                        v-model="formName"
-                        class="text-xl font-bold border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1 w-full"
-                        @input="handleFormNameChange"
-                    />
+                    <div class="flex-1">
+                        <input
+                            v-model="formName"
+                            class="text-xl font-bold border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1 w-full"
+                            @input="handleFormNameChange"
+                        />
+                        <!-- Socket connection status -->
+                        <div class="mt-1 text-sm">
+                            <span v-if="socketConnected" class="text-green-600 flex items-center">
+                                <span class="inline-block w-2 h-2 bg-green-600 rounded-full mr-1"></span>
+                                Connected to server
+                            </span>
+                            <span v-else class="text-red-600 flex items-center">
+                                <span class="inline-block w-2 h-2 bg-red-600 rounded-full mr-1"></span>
+                                Disconnected from server
+                            </span>
+                            <span v-if="socketError" class="block text-red-600 mt-1">{{ socketError }}</span>
+                        </div>
+                    </div>
                     <div class="flex space-x-2">
                         <button
                             v-if="props.formId"
