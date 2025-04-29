@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FormBuilder extends Model
 {
@@ -47,5 +48,21 @@ class FormBuilder extends Model
         return $this->belongsToMany(User::class, 'form_collaborators')
             ->withPivot('status')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the chat messages for this form.
+     */
+    public function chatMessages(): HasMany
+    {
+        return $this->hasMany(Chat::class, 'form_id');
+    }
+
+    /**
+     * Get the whiteboard activities for this form.
+     */
+    public function whiteboardActivities(): HasMany
+    {
+        return $this->hasMany(WhiteboardActivity::class, 'form_id');
     }
 }

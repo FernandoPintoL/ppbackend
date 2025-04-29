@@ -143,6 +143,15 @@ io.on('connection', (socket) => {
         socket.to(roomId).emit('typing', { user, roomId });
     });
 
+    // Chat message handling
+    socket.on('chatMessage', (data) => {
+        const { text, user, timestamp, roomId } = data;
+        console.log(`Chat message in room ${roomId} from ${user}: ${text}`);
+
+        // Broadcast the message to all users in the room
+        io.to(roomId).emit('chatMessage', { text, user, timestamp, roomId });
+    });
+
     // Legacy chat message handling
     socket.on('chat message', (msg) => {
         console.log('Message received:', msg);
@@ -155,7 +164,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('escribiendo', (data) => {
-        socket.broadcast.emit('escribiendo', data);
+        const { user, roomId } = data;
+        console.log(`User ${user} is typing in room ${roomId}`);
+
+        // Broadcast the typing event only to users in the same room
+        socket.to(roomId).emit('escribiendo', { user, roomId });
     });
 
     // Handle disconnection

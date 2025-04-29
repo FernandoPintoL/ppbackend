@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Chat extends Model
+class WhiteboardActivity extends Model
 {
-    /** @use HasFactory<\Database\Factories\ChatFactory> */
     use HasFactory;
 
     /**
@@ -19,8 +18,9 @@ class Chat extends Model
     protected $fillable = [
         'form_id',
         'user_id',
-        'message',
-        'is_system_message',
+        'action_type',
+        'action_data',
+        'description',
     ];
 
     /**
@@ -29,11 +29,11 @@ class Chat extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_system_message' => 'boolean',
+        'action_data' => 'json',
     ];
 
     /**
-     * Get the form that the chat message belongs to.
+     * Get the form that the activity belongs to.
      */
     public function form(): BelongsTo
     {
@@ -41,7 +41,7 @@ class Chat extends Model
     }
 
     /**
-     * Get the user that sent the chat message.
+     * Get the user that performed the activity.
      */
     public function user(): BelongsTo
     {

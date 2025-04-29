@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pizarras', function (Blueprint $table) {
+        Schema::create('form_builders', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('room_id')->nullable();
+            $table->json('elements')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pizarras');
+        Schema::dropIfExists('form_builders');
     }
 };

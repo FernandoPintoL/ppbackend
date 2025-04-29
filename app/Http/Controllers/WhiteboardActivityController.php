@@ -2,28 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Chat;
 use App\Models\FormBuilder;
-use App\Http\Requests\StoreChatRequest;
-use App\Http\Requests\UpdateChatRequest;
+use App\Models\WhiteboardActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
-class ChatController extends Controller
+class WhiteboardActivityController extends Controller
 {
     /**
-     * Display the chat interface.
+     * Get whiteboard activities for a specific form.
      */
-    public function index()
-    {
-        return Inertia::render('Chat/Index');
-    }
-
-    /**
-     * Get chat messages for a specific form.
-     */
-    public function getFormMessages(Request $request, $formId)
+    public function getFormActivities(Request $request, $formId)
     {
         // Find the form
         $form = FormBuilder::findOrFail($formId);
@@ -31,24 +20,25 @@ class ChatController extends Controller
         // Check if user has access to this form
         $this->authorizeAccess($form);
 
-        // Get chat messages for this form
-        $messages = $form->chatMessages()
+        // Get whiteboard activities for this form
+        $activities = $form->whiteboardActivities()
             ->with('user:id,name,email')
             ->orderBy('created_at', 'asc')
             ->get();
 
-        return response()->json($messages);
+        return response()->json($activities);
     }
 
     /**
-     * Store a new chat message.
+     * Store a new whiteboard activity.
      */
-    public function storeMessage(Request $request)
+    public function storeActivity(Request $request)
     {
         $validated = $request->validate([
             'form_id' => 'required|exists:form_builders,id',
-            'message' => 'required|string',
-            'is_system_message' => 'boolean',
+            'action_type' => 'required|string',
+            'action_data' => 'nullable|json',
+            'description' => 'nullable|string',
         ]);
 
         // Find the form
@@ -57,18 +47,19 @@ class ChatController extends Controller
         // Check if user has access to this form
         $this->authorizeAccess($form);
 
-        // Create the chat message
-        $message = Chat::create([
+        // Create the whiteboard activity
+        $activity = WhiteboardActivity::create([
             'form_id' => $validated['form_id'],
             'user_id' => Auth::id(),
-            'message' => $validated['message'],
-            'is_system_message' => $validated['is_system_message'] ?? false,
+            'action_type' => $validated['action_type'],
+            'action_data' => $validated['action_data'] ?? null,
+            'description' => $validated['description'] ?? null,
         ]);
 
         // Load the user relationship
-        $message->load('user:id,name,email');
+        $activity->load('user:id,name,email');
 
-        return response()->json($message, 201);
+        return response()->json($activity, 201);
     }
 
     /**
@@ -77,6 +68,11 @@ class ChatController extends Controller
     private function authorizeAccess(FormBuilder $form)
     {
         $user = Auth::user();
+
+        // Check if user is authenticated
+        if (!$user) {
+            abort(401, 'Unauthenticated. Please log in to access this resource.');
+        }
 
         // Check if user is the owner
         if ($form->user_id === $user->id) {
@@ -90,7 +86,7 @@ class ChatController extends Controller
             ->exists();
 
         if (!$isCollaborator) {
-            abort(403, 'You do not have access to this form\'s chat.');
+            abort(403, 'You do not have access to this form\'s whiteboard activities.');
         }
 
         return true;
