@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Controllers\{ChatController, FigmaController, NodeController, PizarraController, CanvaController, FormBuilderController, WhiteboardActivityController};
 
@@ -10,7 +11,26 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
+    $user = Auth::user();
+
+    // Get forms created by the user
+    $ownedForms = \App\Models\FormBuilder::where('user_id', $user->id)->get();
+
+    // Get forms the user is collaborating on (with accepted status)
+    $collaboratingForms = $user->collaboratingForms()
+        ->wherePivot('status', 'accepted')
+        ->get();
+
+    // Get pending invitations
+    $pendingInvitations = $user->collaboratingForms()
+        ->wherePivot('status', 'pending')
+        ->get();
+
+    return Inertia::render('Dashboard', [
+        'ownedForms' => $ownedForms,
+        'collaboratingForms' => $collaboratingForms,
+        'pendingInvitations' => $pendingInvitations,
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::resource('chat', ChatController::class);

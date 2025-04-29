@@ -2,7 +2,22 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import FormBuilerIndex from '@/pages/FormBuilder/Index.vue';
+import FormBuilderDashboard from '@/pages/FormBuilder/FormBuilderDashboard.vue';
+
+const props = defineProps({
+    ownedForms: {
+        type: Array,
+        required: true,
+    },
+    collaboratingForms: {
+        type: Array,
+        required: true,
+    },
+    pendingInvitations: {
+        type: Array,
+        required: true,
+    },
+});
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,22 +31,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-<!--        <FormBuilerIndex />-->
-<!--        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-                <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <PlaceholderPattern />
-                </div>
-            </div>
-            <div class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min">
-                <PlaceholderPattern />
-            </div>
-        </div>-->
+        <FormBuilderDashboard
+            :owned-forms="props.ownedForms"
+            :collaborating-forms="props.collaboratingForms"
+            :pending-invitations="props.pendingInvitations"
+        />
     </AppLayout>
 </template>

@@ -3,13 +3,16 @@ import UserInfo from '@/components/UserInfo.vue';
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import type { User } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { LogOut, Settings } from 'lucide-vue-next';
+import { LogOut, Settings, Moon, Sun } from 'lucide-vue-next';
+import { useAppearance } from '@/composables/useAppearance';
 
 interface Props {
     user: User;
 }
 
 defineProps<Props>();
+
+const { appearance, updateAppearance } = useAppearance();
 </script>
 
 <template>
@@ -25,6 +28,18 @@ defineProps<Props>();
                 <Settings class="mr-2 h-4 w-4" />
                 Settings
             </Link>
+        </DropdownMenuItem>
+    </DropdownMenuGroup>
+    <DropdownMenuSeparator />
+    <DropdownMenuGroup>
+        <DropdownMenuLabel class="px-2 py-1.5 text-xs font-semibold">Theme</DropdownMenuLabel>
+        <DropdownMenuItem @click="updateAppearance('light')" :class="{ 'bg-accent': appearance === 'light' }">
+            <Sun class="mr-2 h-4 w-4" />
+            Light
+        </DropdownMenuItem>
+        <DropdownMenuItem @click="updateAppearance('dark')" :class="{ 'bg-accent': appearance === 'dark' }">
+            <Moon class="mr-2 h-4 w-4" />
+            Dark
         </DropdownMenuItem>
     </DropdownMenuGroup>
     <DropdownMenuSeparator />

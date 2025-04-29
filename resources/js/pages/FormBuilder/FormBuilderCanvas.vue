@@ -2676,8 +2676,8 @@ onUnmounted(() => {
             </div>
             <div class="grid grid-cols-12 gap-4 p-3">
                 <!-- Sidebar with available elements -->
-                <div class="col-span-12 mb-4 rounded-lg bg-gray-100 p-4 md:col-span-3 md:mb-0">
-                    <h2 class="mb-4 text-lg font-semibold">Elementos del Formulario</h2>
+                <div class="col-span-12 mb-4 rounded-lg bg-gray-100 dark:bg-gray-700 p-4 md:col-span-3 md:mb-0">
+                    <h2 class="mb-4 text-lg font-semibold dark:text-white">Elementos del Formulario</h2>
                     <draggable
                         :list="availableElements"
                         :group="{ name: 'formElements', pull: 'clone', put: false }"
@@ -2686,7 +2686,7 @@ onUnmounted(() => {
                         class="space-y-2"
                     >
                         <template #item="{ element }">
-                            <div class="cursor-move rounded border border-gray-200 bg-white p-3 shadow hover:bg-gray-50">
+                            <div class="cursor-move rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 p-3 shadow hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-white">
                                 {{ element.props.label || element.type }}
                             </div>
                         </template>
@@ -2695,7 +2695,7 @@ onUnmounted(() => {
 
                 <!-- Form builder area -->
                 <div class="col-span-12 md:col-span-6">
-                    <div class="rounded-lg bg-white p-4 shadow-md md:p-6">
+                    <div class="rounded-lg bg-white dark:bg-gray-800 p-4 shadow-md md:p-6">
                         <!-- Form elements -->
                         <draggable
                             v-model="formElements"
@@ -2706,12 +2706,12 @@ onUnmounted(() => {
                         >
                             <template #item="{ element, index }">
                                 <div
-                                    class="relative mb-4 cursor-pointer rounded-lg border border-gray-200 p-4 hover:border-blue-500"
-                                    :class="{ 'border-blue-500 bg-blue-50': selectedElement === element }"
+                                    class="relative mb-4 cursor-pointer rounded-lg border border-gray-200 dark:border-gray-600 p-4 hover:border-blue-500 dark:hover:border-blue-400"
+                                    :class="{ 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20': selectedElement === element }"
                                     @click="selectElement(element)"
                                 >
                                     <!-- Element label -->
-                                    <div class="mb-2 text-sm font-medium text-gray-500">{{ element.props.label || element.type }}</div>
+                                    <div class="mb-2 text-sm font-medium text-gray-500 dark:text-gray-300">{{ element.props.label || element.type }}</div>
 
                                     <!-- Render the actual form element -->
                                     <!-- Standard form elements -->
@@ -2949,12 +2949,12 @@ onUnmounted(() => {
                 </div>
 
                 <!-- Properties panel -->
-                <div class="col-span-12 mt-4 rounded-lg bg-gray-100 p-4 md:col-span-3 md:mt-0">
-                    <h2 class="mb-4 text-lg font-semibold">Propiedades</h2>
+                <div class="col-span-12 mt-4 rounded-lg bg-gray-100 dark:bg-gray-700 p-4 md:col-span-3 md:mt-0">
+                    <h2 class="mb-4 text-lg font-semibold dark:text-white">Propiedades</h2>
                     <div v-if="selectedElement" class="space-y-4">
                         <div class="space-y-2">
-                            <label class="block text-sm font-medium text-gray-700">Etiqueta</label>
-                            <input v-model="selectedElement.props.label" class="w-full rounded border border-gray-300 p-2" @input="updateElement" />
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Etiqueta</label>
+                            <input v-model="selectedElement.props.label" class="w-full rounded border border-gray-300 dark:border-gray-600 p-2 dark:bg-gray-800 dark:text-white" @input="updateElement" />
                         </div>
 
                         <div v-if="['input', 'textarea', 'number'].includes(selectedElement.type)" class="space-y-2">

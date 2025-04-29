@@ -89,4 +89,32 @@ html {
     body {
         @apply bg-background text-foreground;
     }
+
+    /* Add dark mode styles for form elements */
+    .dark input,
+    .dark select,
+    .dark textarea {
+        @apply bg-gray-800 border-gray-600 text-white;
+    }
+
+    .dark label,
+    .dark .text-gray-500,
+    .dark .text-gray-600,
+    .dark .text-gray-700 {
+        @apply text-gray-300;
+    }
+
+    .dark .bg-white {
+        @apply bg-gray-800;
+    }
+
+    .dark .bg-gray-50,
+    .dark .bg-gray-100 {
+        @apply bg-gray-700;
+    }
+
+    .dark .border-gray-200,
+    .dark .border-gray-300 {
+        @apply border-gray-600;
+    }
 }

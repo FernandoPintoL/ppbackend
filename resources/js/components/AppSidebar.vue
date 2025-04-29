@@ -15,21 +15,6 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Usuarios',
-        href: '/users',
-        icon: User2Icon,
-    },
-    {
-        title: 'Chat',
-        href: '/chat',
-        icon: MessageCircle,
-    },
-    {
-        title: 'Canva',
-        href: '/canva',
-        icon: Table2Icon,
-    },
-    {
         title: 'Form Builder',
         href: '/form-builder',
         icon: FormInput,
