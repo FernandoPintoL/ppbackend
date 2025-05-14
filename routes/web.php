@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use App\Http\Controllers\{ChatController, FigmaController, NodeController, PizarraController, CanvaController, FormBuilderController, WhiteboardActivityController};
+use App\Http\Controllers\{AIController, ChatController, FigmaController, NodeController, PizarraController, CanvaController, FormBuilderController, WhiteboardActivityController, PizarraFlutterController};
 
 
 Route::get('/', function () {
@@ -43,8 +43,17 @@ Route::get('whiteboard/form/{formId}/activities', [WhiteboardActivityController:
 Route::post('whiteboard/activity', [WhiteboardActivityController::class, 'storeActivity'])->middleware('auth')->name('whiteboard.activity.store');
 
 Route::resource('pizarra', PizarraController::class);
+Route::resource('pizarra-flutter', PizarraFlutterController::class);
 Route::resource('canva', CanvaController::class);
 Route::resource('form-builder', FormBuilderController::class);
+
+// Pizarra Flutter Collaboration Routes
+Route::post('pizarra-flutter/{id}/invite', [PizarraFlutterController::class, 'inviteCollaborator'])->name('pizarra-flutter.invite');
+Route::post('pizarra-flutter/{id}/accept', [PizarraFlutterController::class, 'acceptInvitation'])->name('pizarra-flutter.accept');
+Route::post('pizarra-flutter/{id}/reject', [PizarraFlutterController::class, 'rejectInvitation'])->name('pizarra-flutter.reject');
+Route::post('pizarra-flutter/{id}/leave', [PizarraFlutterController::class, 'leaveCollaboration'])->name('pizarra-flutter.leave');
+Route::get('pizarra-flutter/{id}/collaborators', [PizarraFlutterController::class, 'getCollaborators'])->name('pizarra-flutter.collaborators');
+Route::get('pizarra-flutter/invite/{form}', [PizarraFlutterController::class, 'handleInviteLink'])->name('pizarra-flutter.invite-link');
 
 // Form Builder Collaboration Routes
 Route::post('form-builder/{id}/invite', [FormBuilderController::class, 'inviteCollaborator'])->name('form-builder.invite');
@@ -70,6 +79,10 @@ Route::post('form-builder/{id}/collaborators/{userId}/status', [FormBuilderContr
 
 // Form Builder Image Scanning Route
 Route::post('form-builder/scan-image', [FormBuilderController::class, 'scanImage'])->name('form-builder.scan-image');
+
+// AI Routes
+Route::post('/ai/generate-flutter-ui', [AIController::class, 'generateFlutterUI'])->name('ai.generate-flutter-ui');
+Route::post('/ai/generate-response', [AIController::class, 'generateResponse'])->name('ai.generate-response');
 
 Route::get('/node-data', NodeController::class.'@getData')->name('node-data');
 Route::get('/figma/file/{fileId}', [FigmaController::class, 'getFile'])->name('figma.file');

@@ -57,4 +57,15 @@ class User extends Authenticatable
             ->withPivot('status')
             ->withTimestamps();
     }
+
+    /**
+     * Get the pizarra flutters that the user is collaborating on.
+     */
+    public function collaboratingPizarraFlutters(): BelongsToMany
+    {
+        return $this->belongsToMany(PizarraFlutter::class, 'pizarra_collaborators')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
+
 }
